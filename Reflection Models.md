@@ -1,119 +1,4 @@
-[TOC]
-
-
-
-# 渲染方程概述：从BRDF到渲染方程
-
-## 辐射度量学
-
-Difference among three def:
-
-- Irradiance: power per projected unit area
-
-- Intensity: power per solid angle 
-
-- Radiance: Irradiance per solid angle
-
-  Radiance: Intensity per projected unit area
-
-Difference between Irradiance and Radiance:
-
-- Irradiance: total power received by area $dA$
-
-- Radiance: power received by area $dA$ from “direction” $d\omega$
-
-
-
-## 双向反射分布函数：对不同材质的描述
-
-双向反射分布函数（BRDF）描述光线和物体材质表面的交互作用，它是对不同材质的描述。它是一个四维函数，在$4\pi$球面度上定义，在表面上的每一个点都有定义。它的四个维度分别是:
-
-- $\Psi$ - 入射方向 $(x_1,y_1)$
-- $\Theta$ - 出射方向 $(x_2,y_2)$
-
-BRDF定义为一个比值，是点x处在出射方向$\Psi$上反射的相对辐射亮度与通过不同立体角入射的相对辐照度之比，可表示为
-
-$$
-f_r(x,\Psi \to \Theta)=\frac{dL(x\to \Theta)}{dE(x\gets\Theta)}=\frac{dL(x\to \Theta)}{L(x\gets\Theta)cos(N_x,\Psi)d\omega_{\Psi}}
-$$
-其中，$N_x$是法线向量，$cos(N_x,\Psi)$是法线向量和入射方向向量的余弦，也即入射方向向量在表面上（假设表面是平面）的投影。
-
-### BRDF的性质
-
-1. 互反律
-   $$
-   f_r(x,\Psi \to \Theta)=f_r(x,\Theta \to \Psi)
-   $$
-   亦可直接将BRDF表示为
-   $$
-   f_r(x,\Psi \leftrightarrow  \Theta)
-   $$
-   
-2. 入射与出射亮度的关系
-
-   在不透明的非发射表面点周围的半球上有一些辐照度分布，总反射亮度可表示为
-   $$
-   dL(x\to\Theta)=f_r(x,\Psi\to\Theta)dE(x\gets\Psi)\\
-   L(x\to\Theta)=\int_{\Omega x}f_r(x,\Psi\to\Theta)dE(x\gets\Psi)\\
-   L(x\to\Theta)=f_r(x,\Psi\to\Theta)L(x\gets\Theta)cos(N_x,\Psi)d\omega_{\Psi}
-   $$
-
-3. 能量守恒
-
-   对于半球上任何入射辐射亮度$L(x\gets \Psi)$的分布，每单位表面积的总入射功率是半球的总辐照度：
-   $$
-   E=\int_{\Omega x}L(x\gets\Psi)cos(N_x,\Psi)d\omega_\Psi
-   $$
-   同时，由能量守恒定律，*在某点于某方向*的出射辐射亮度，等于该点*在某点于某方向*上的自发光和*在某点于某方向*上的反射光的辐射亮度，即：
-   $$
-   L(x\to \Theta) = L_e(x\to\Theta)+L_r(x\to\Theta)
-   $$
-   可展开为渲染方程：
-   $$
-   L_o(x,\vec\omega_o)=L_e(x,\omega_o)+\int_{H^2}f_r(x,\vec\omega_o,\vec\omega_i)L_i(x,\vec\omega_i)cos\theta_id\vec\omega_i\\
-   $$
-   *其中$f_r$是散射函数，即 BRDF方程。余弦项是入射光和法线之间的夹角。*
-
-
-
-对于经验模型的BRDF，我们希望它是一个良好的、合理的BRDF，也即需要它满足能量守恒和互反律。
-
-### BRDF示例：漫反射、镜面反射与折射
-
-1. 漫反射
-   $$
-   f_r(x,\Psi\leftrightarrow\Theta)=\frac{\rho_d}{\pi}
-   $$
-   其中$\rho_d$反射率是反射能量与入射能量之比。对于基于物理的材质，$\rho _d\in(0,1]$。
-
-2. 镜面
-
-   - 只考虑折射
-
-     按反射定律找到出射方向：假设入射方向$\Psi$，表面法线$N$，反射方向为$R=2(N\cdot\Psi)N-\Psi$
-
-   - 考虑散射
-
-     **方向：**Snell's law
-
-     按Snell's law计算镜面折射方向，即根据$\eta_1sin\theta_1=\eta_2sin\theta_2$，则有透射光线
-     $$
-     T=-\frac{\eta_1}{\eta_2}\Psi+N(\frac{\eta_1}{\eta_2}cos\theta_1-\sqrt{1-(\frac{\eta_1}{\eta_2})^2(1-cos^2\theta_1)}\\
-     =-\frac{\eta_1}{\eta_2}\Psi+N(\frac{\eta_1}{\eta_2}cos\theta_1-\sqrt{(1-(\frac{\eta_1}{\eta_2})^2(1-N\cdot\Psi)^2}
-     $$
-     同时须考虑到内全反射（考虑临界角）。
-   
-     **能量：**Fresnel Equations
-
-     上述等式考虑到了反射和折射方向（角度），菲涅尔方程则考虑到了能量。
-
-   - 透明表面的互反律
-
-     使用BSDF描述透明面时，需要注意透明表面可能不具备互反律。
-
-     
-
-
+# Reflection Models
 
 ## 着色模型：对不同材质的理想近似
 
@@ -138,7 +23,7 @@ Shading: The process of applying a material to an object.
 
 **Shading is Local 局部着色**
 
-<img src="C:/Data/Posts/Rendering.assets/image-20220319165051116-16499391488013.png" alt="image-20220319165051116" style="zoom: 33%;" />
+<img src="Reflection%20Models.assets/image-20220319165051116-16499391488013.png" alt="image-20220319165051116" style="zoom: 33%;" />
 
 对于任何着色点，我们定义以下量：
 
@@ -182,7 +67,7 @@ Shading: The process of applying a material to an object.
 
 物体辐射/发散的光线（能量）的到达 Light Falloff : 接收的强度与和到光源的距离成平方反比
 
-<img src="C:/Data/Posts/Rendering.assets/image-20220319180225135-16499391488001.png" alt="image-20220319180225135" style="zoom: 25%;" />
+<img src="Reflection%20Models.assets/image-20220319180225135-16499391488001.png" alt="image-20220319180225135" style="zoom: 25%;" />
 
 漫反射计算公式：
 $$
@@ -218,9 +103,9 @@ $$
 
   由于余弦函数的容忍度很高，我们却希望控制当角度偏离时看不到高光，则采取指数$p$进行控制。一般而言$p \in[100,200]$。
 
-  <img src="C:/Data/Posts/Rendering.assets/image-20220319182411823-16499391488002.png" alt="image-20220319182411823" style="zoom:33%;" />
+  <img src="Reflection%20Models.assets/image-20220319182411823-16499391488002.png" alt="image-20220319182411823" style="zoom:33%;" />
 
-  <img src="C:/Data/Posts/Rendering.assets/image-20220319182424703-16499391488014.png" alt="image-20220319182424703" style="zoom: 33%;" />
+  <img src="Reflection%20Models.assets/image-20220319182424703-16499391488014.png" alt="image-20220319182424703" style="zoom: 33%;" />
 
 Specular有Phong模型和Blinn模型两种策略，其中Blinn模型采用了半程向量进行计算，而Phong模型直接进行计算。
 
@@ -246,7 +131,7 @@ Add constant color to account for disregarded  illumination and fill in black sh
 $$
 L=L_a+L_d+L_s=k_aI_a+k_d\frac{I}{r^2}max(0,\vec n \cdot \vec l)+k_s\frac{I}{r^2}max(0,\vec n \cdot \vec h)^p
 $$
-<img src="C:/Data/Posts/Rendering.assets/image-20220319182637855-16499391488015.png" alt="image-20220319182637855" style="zoom:33%;" />
+<img src="Reflection%20Models.assets/image-20220319182637855-16499391488015.png" alt="image-20220319182637855" style="zoom:33%;" />
 
 但同时，Blinn-Phong模型仍有很多缺陷，无法模拟很多重要的物理现象，如菲涅尔反射、各向异性。
 
@@ -312,19 +197,19 @@ $$
 
 - Beckmann NDF
 
-    即一个法线方向的函数，它类似于Gaussian高斯函数，它定义在坡度空间Slope Space上（保证微表面的面不会朝下）：
-    $$
-    D(h)=\frac{e^{-\frac{tan^2\theta_h}{\alpha^2}}}{\pi\alpha^2cos^4\theta_h}
-    $$
-    其中，$\alpha$描述法线的粗糙程度，粗糙程度越小效果越接近镜面反射。$\theta_h$则是半程向量$h$和法线$n$的夹角。
+  即一个法线方向的函数，它类似于Gaussian高斯函数，它定义在坡度空间Slope Space上（保证微表面的面不会朝下）：
+  $$
+  D(h)=\frac{e^{-\frac{tan^2\theta_h}{\alpha^2}}}{\pi\alpha^2cos^4\theta_h}
+  $$
+  其中，$\alpha$描述法线的粗糙程度，粗糙程度越小效果越接近镜面反射。$\theta_h$则是半程向量$h$和法线$n$的夹角。
 
 - GGX/Trowbridge-Reitz NDF
 
-    函数图像的突出特征在于其“长尾巴”，会呈现出“光晕”的效果
+  函数图像的突出特征在于其“长尾巴”，会呈现出“光晕”的效果
 
-    - Extending GGX: GTR(Generalized Trowbridge-Reitz)
+  - Extending GGX: GTR(Generalized Trowbridge-Reitz)
 
-      “更长的尾巴”
+    “更长的尾巴”
 
 
 
@@ -334,7 +219,7 @@ $$
 $$
 f_r(w_o,w_i)=\frac{k_d}{\pi}+\frac{k_s}{4\pi(n\cdot w_i)}D(h)F(w_o)G(w_o,w_i)
 $$
-<img src="浅谈渲染方程.assets/image-20220524231008690.png" alt="image-20220524231008690" style="zoom:33%;" />
+<img src="Reflection%20Models.assets/image-20220524231008690-16572569590762.png" alt="image-20220524231008690" style="zoom:33%;" />
 
 第一项是一个常数，对应漫反射的BRDF：
 $$
@@ -385,7 +270,7 @@ $$
 >   $$
 >   表示宏观投影结果等于正面投影结果之和$(v\cdot m)^+$
 >
->   <img src="浅谈渲染方程.assets/image-20220525001303977.png" alt="image-20220525001303977" style="zoom:33%;" />
+>   <img src="Reflection%20Models.assets/image-20220525001303977.png" alt="image-20220525001303977" style="zoom:33%;" />
 >
 >   对于CT模型，照到一个微平面的光线可能会被相邻的微平面遮挡，微表面的反射光线也可能会被相邻微表面遮挡。
 >
@@ -507,54 +392,6 @@ Disney principled BRDF的设计，在很多时候都是建立在拟合的基础�
 它提供了很多参数，允许基于直观设计出各种效果。但同时，参数空间越大越容易造成冗余。同时，过大的参数空间难以去学习和训练。
 
 它有开源实现。这并不是基于物理的，但我们仍旧称之为PBR材质。
-
-
-
-## 蒙特卡洛积分方法：对连续光能传输函数进行采样
-
-我们所需要处理的渲染方程是一个复杂的积分形式。
-
-一般，我们用数值计算方法（黎曼积分方法）求解积分时，最简单的将积分区间划分为$n$等分，将每一小区间所对应的积分面积近似为长方形，计算在该区间的函数数值并乘以步长，最后将所有小长方形进行相加得到积分结果。
-
-Monte Carlo方法是一大类随机算法的总称，通过随机样本估算真实值。将Monte Carlo方法应用于积分的求解上，可以帮助我们对定积分进行近似，从而估计出积分的值。其基本形式是：
-$$
-\int f(x)dx\approx\frac{1}{N}\sum^N_{i=1}\frac{f(X_i)}{p(X_i)}
-$$
-相较于黎曼积分方法，这种方法在数学意义上是无偏的。对此，可以通过求解数学期望进行证明：
-$$
-E_{X_i-p(x)}(\frac{f(X_i)}{p(X_i)})
-=\int \frac{f(x)}{p(x)}p(x)dx
-=\int f(x)dx
-$$
-同时，可以指定分布对被积分函数进行采样，而不用拘于固定步长。也正因如此，Monte Carlo积分方法允许我们使用重要性采样的策略。
-
-## 渲染方程：描述光能的整体平衡分布
-
-渲染方程用于描述场景中光能的平衡分布，对于任意表面点和方向，渲染方程给出最后的出射辐射亮度$L(x\to\Theta)$
-
-**半球形公式**是最常用的渲染方程形式。
-
-按照BRDF定义，
-$$
-f_r(x,\Psi \to \Theta)=\frac{dL_r(x\to \Theta)}{dE(x\gets\Theta)}
-$$
-其中，
-$$
-L_r(x\to\Theta)=\int_{\Omega_x}f_r(x,\Psi\to\Theta)L(x\gets\Psi)cos(N_x,\Psi)d\omega_{\Psi}
-$$
-则得到第二种弗雷德霍姆方程形式的渲染方程：
-$$
-L(x\to\Theta)=L_e(x\to\Theta)+\int_{\Omega_x}f_r(x,\Psi\to\Theta)L(x\gets\Psi)cos(N_x,\Psi)d\omega_{\Psi}
-$$
-
-
-**区域公式**则是将定义域
-
-## 减小方差
-
-### 重要性采样：对渲染方程收敛速度的优化
-
-### 分层采样：减小方差
 
 
 
