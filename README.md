@@ -2,9 +2,10 @@
 
 个人的一些课程笔记和论文笔记的汇总，待整理。
 
+  
 
-
-Graphic笔记：
+  
+**Graphic笔记：**  
 
 [Rendering Equation](Rendering%20Equation.md) [[PDF](Rendering%20Equation.pdf)]：从BRDF到渲染方程的基本性质和形式推导 
 
@@ -27,10 +28,12 @@ Graphic笔记：
 [蒙特卡洛积分和多重重要性采样：路径追踪的概率基础](Sampling.md) [[PDF](Sampling2021.pdf)] 四舍五入相当于论文笔记
 
 
+<!-- --- -->
+  
 
+**C++笔记：**  
 
-
-C++笔记：https://www.wolai.com/indevn/dhAu6uEWbWnv7Ue7SNBi9U
+https://www.wolai.com/indevn/dhAu6uEWbWnv7Ue7SNBi9U
 
 - 模板元编程
 - 函数式编程
