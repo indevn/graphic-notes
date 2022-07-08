@@ -6,7 +6,7 @@
 
 Graphic笔记：
 
-[Rendering Equation](Rendering Equation.md) [[PDF](Rendering Equation.pdf)]：从BRDF到渲染方程的基本性质和形式推导 
+[Rendering Equation](Rendering_Equation.md) [[PDF](Rendering Equation.pdf)]：从BRDF到渲染方程的基本性质和形式推导 
 
 [Refelection Models](Reflection Models.md) [[PDF](Reflection Models.pdf)]：使用BRDF进行描述的着色模型，包含标准着色模型(Blinn-Phong)和基于物理的BRDF模型(Cook-Torrance)
 
